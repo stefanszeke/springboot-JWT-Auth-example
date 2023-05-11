@@ -1,0 +1,27 @@
+### test
+GET http://localhost:8080/test
+### test post
+POST http://localhost:8080/test
+Content-Type: application/json
+
+{
+    "name": "test"
+}
+
+### register
+POST http://localhost:8080/register
+Content-Type: application/json
+
+{
+    "username": "test",
+    "email": "test@test.com",
+    "password": "test"
+}
+
+### login
+GET http://localhost:8080/loginUser
+Authorization: Basic test@test.com:test
+
+### test protected route with token
+GET http://localhost:8080/test2
+Authorization: eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzcHJpbmdib290IHNlY3VyaXR5IGFwcCIsInN1YiI6InRlc3RAdGVzdC5jb20iLCJpYXQiOjE2ODM3ODM4NzgsImV4cCI6MTY4NDE4ODAwMH0.aaivOKiOvJP2Rl-Utd-2P5fXmDWWVKLvQn6YRcKFiU0
