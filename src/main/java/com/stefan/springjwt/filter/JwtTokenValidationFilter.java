@@ -36,12 +36,12 @@ public class JwtTokenValidationFilter extends OncePerRequestFilter {
     // Cookie[] cookies = request.getCookies();
     // String jwt = null;
     // if(cookies != null) {
-    //   for(Cookie cookie : cookies) {
-    //     if(cookie.getName().equals("jwt")) {
-    //       jwt = cookie.getValue();
-    //       break;
-    //     }
-    //   }
+    // for(Cookie cookie : cookies) {
+    // if(cookie.getName().equals("jwt")) {
+    // jwt = cookie.getValue();
+    // break;
+    // }
+    // }
     // }
 
     if (null != jwt) {
@@ -54,11 +54,11 @@ public class JwtTokenValidationFilter extends OncePerRequestFilter {
 
         System.out.println("claims: " + claims);
 
-        String username = claims.getSubject();
+        String userId = claims.getSubject();
         String authorities = (String) claims.get("authorities");
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(
-            username,
+            userId,
             null,
             AuthorityUtils.commaSeparatedStringToAuthorityList(authorities));
 

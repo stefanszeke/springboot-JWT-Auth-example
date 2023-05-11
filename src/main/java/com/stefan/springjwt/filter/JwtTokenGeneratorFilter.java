@@ -56,7 +56,7 @@ public class JwtTokenGeneratorFilter extends OncePerRequestFilter {
       Cookie cookieUsername = new Cookie("username", user.getUsername());
       cookieUsername.setMaxAge(60 * 60 * 24 * 5); // set cookie expiry to 5 days
       cookieUsername.setPath("/");
-
+      response.addCookie(cookieUsername);
 
     } else {
       System.out.println("authentication is null");
