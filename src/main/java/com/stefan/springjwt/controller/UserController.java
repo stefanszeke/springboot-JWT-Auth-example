@@ -1,5 +1,7 @@
 package com.stefan.springjwt.controller;
 
+import java.security.Principal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -32,8 +34,10 @@ public class UserController {
   }
 
   @GetMapping("/test2")
-  public ResponseEntity<String> test2() {
-    return ResponseEntity.ok("Protected: Test2 successful!");
+  public ResponseEntity<String> test2(Principal principal) {
+    String userID = principal.getName();
+    System.out.println("userID: " + userID);
+    return ResponseEntity.ok("Protected: Test2 successful! User ID: " + userID);
   }
 
   @PostMapping("/test")

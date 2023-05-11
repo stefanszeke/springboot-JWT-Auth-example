@@ -12,6 +12,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.stefan.springjwt.model.User;
+
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.FilterChain;
@@ -32,10 +34,13 @@ public class JwtTokenGeneratorFilter extends OncePerRequestFilter {
     System.out.println("authentication: " + authentication);
 
     if (null != authentication) {
+
+      User user = (User) authentication.getPrincipal();
+
       SecretKey key = Keys.hmacShaKeyFor("BananaBananaBananaBananaBananaBanana".getBytes(StandardCharsets.UTF_8));
       String jwt = Jwts.builder()
           .setIssuer("springboot security app")
-          .setSubject(authentication.getName())
+          .setSubject(String.valueOf(user.getId()))
           .setIssuedAt(new Date())
           .setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(5)))
           .signWith(key)
@@ -48,7 +53,7 @@ public class JwtTokenGeneratorFilter extends OncePerRequestFilter {
       cookieJwt.setHttpOnly(true);
       response.addCookie(cookieJwt);
 
-      Cookie cookieUsername = new Cookie("username", authentication.getName());
+      Cookie cookieUsername = new Cookie("username", user.getUsername());
       cookieUsername.setMaxAge(60 * 60 * 24 * 5); // set cookie expiry to 5 days
       cookieUsername.setPath("/");
 

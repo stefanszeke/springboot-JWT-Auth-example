@@ -32,7 +32,7 @@ public class BcryptUserProvider implements AuthenticationProvider {
     User user = userRepository.findByEmail(username);
 
     if(user != null && passwordEncoder.matches(password, user.getPassword())) {
-      return new UsernamePasswordAuthenticationToken(username, password);
+      return new UsernamePasswordAuthenticationToken(user, password);
     } else {
       throw new BadCredentialsException("Authentication failed!");
     }
