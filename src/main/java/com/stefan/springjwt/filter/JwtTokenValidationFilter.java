@@ -19,6 +19,7 @@ import io.jsonwebtoken.io.IOException;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -28,7 +29,20 @@ public class JwtTokenValidationFilter extends OncePerRequestFilter {
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException, java.io.IOException {
 
+    // get the JWT token from the header
     String jwt = request.getHeader("Authorization");
+
+    // get the JWT token from the cookie
+    // Cookie[] cookies = request.getCookies();
+    // String jwt = null;
+    // if(cookies != null) {
+    //   for(Cookie cookie : cookies) {
+    //     if(cookie.getName().equals("jwt")) {
+    //       jwt = cookie.getValue();
+    //       break;
+    //     }
+    //   }
+    // }
 
     if (null != jwt) {
       try {
@@ -46,10 +60,9 @@ public class JwtTokenValidationFilter extends OncePerRequestFilter {
         Authentication authentication = new UsernamePasswordAuthenticationToken(
             username,
             null,
-            AuthorityUtils.commaSeparatedStringToAuthorityList(authorities)
-        );
+            AuthorityUtils.commaSeparatedStringToAuthorityList(authorities));
 
-            System.out.println("authentication after JWT Validation: " + authentication);
+        System.out.println("authentication after JWT Validation: " + authentication);
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -63,7 +76,7 @@ public class JwtTokenValidationFilter extends OncePerRequestFilter {
 
   @Override
   protected boolean shouldNotFilter(HttpServletRequest request) {
-    String[] pathsToSkip = { "/register", "/loginUser","/test" };
+    String[] pathsToSkip = { "/register", "/loginUser", "/test" };
     return Arrays.stream(pathsToSkip).anyMatch(path -> request.getServletPath().equals(path));
   }
 

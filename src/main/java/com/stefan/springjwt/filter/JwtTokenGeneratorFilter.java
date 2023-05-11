@@ -42,10 +42,17 @@ public class JwtTokenGeneratorFilter extends OncePerRequestFilter {
           .compact();
 
       // set the JWT token as a cookie
-      Cookie cookie = new Cookie("jwt", jwt);
-      cookie.setMaxAge(60 * 60 * 24 * 5); // set cookie expiry to 5 days
-      cookie.setPath("/");
-      response.addCookie(cookie);
+      Cookie cookieJwt = new Cookie("jwt", jwt);
+      cookieJwt.setMaxAge(60 * 60 * 24 * 5); // set cookie expiry to 5 days
+      cookieJwt.setPath("/");
+      cookieJwt.setHttpOnly(true);
+      response.addCookie(cookieJwt);
+
+      Cookie cookieUsername = new Cookie("username", authentication.getName());
+      cookieUsername.setMaxAge(60 * 60 * 24 * 5); // set cookie expiry to 5 days
+      cookieUsername.setPath("/");
+
+
     } else {
       System.out.println("authentication is null");
     }
