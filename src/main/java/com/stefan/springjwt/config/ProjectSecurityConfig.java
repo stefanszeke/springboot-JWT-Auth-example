@@ -46,6 +46,9 @@ public class ProjectSecurityConfig {
           });
         })
 
+        .exceptionHandling(exceptionHandling -> exceptionHandling
+            .authenticationEntryPoint(new JwtAuthenticationEntryPoint()))
+
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/register", "/loginUser", "/test").permitAll()
             .anyRequest().authenticated())

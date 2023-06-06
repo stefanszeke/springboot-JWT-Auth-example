@@ -35,16 +35,16 @@ public class UserController {
   }
 
   @GetMapping("/test2")
-  public ResponseEntity<Map<String, String>> test2(Principal principal) {
-
+  public ResponseEntity<?> test2(Principal principal) {
     if (principal == null) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
           .body(Map.of("error", "Unauthorized: Token is missing or invalid"));
     }
 
+    // Your logic for the protected route here
     String userID = principal.getName();
     System.out.println("userID: " + userID);
-    return ResponseEntity.ok(Map.of("message", "Test2 successful!: user Id: " + userID));
+    return ResponseEntity.ok(Map.of("message", "Test2 successful! User ID: " + userID));
   }
 
   @PostMapping("/test")
