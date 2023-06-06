@@ -8,6 +8,10 @@ import java.util.stream.Collectors;
 
 import javax.crypto.SecretKey;
 
+import org.apache.tomcat.util.http.SameSiteCookies;
+import org.springframework.boot.web.server.Cookie.SameSite;
+import org.springframework.http.ResponseCookie;
+import org.springframework.http.ResponseCookie.ResponseCookieBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -30,7 +34,7 @@ public class JwtTokenGeneratorFilter extends OncePerRequestFilter {
     System.out.println(" *** token generation ***");
     // get the authentication object from the security context
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    
+
     System.out.println("authentication: " + authentication);
 
     if (null != authentication) {
@@ -47,16 +51,25 @@ public class JwtTokenGeneratorFilter extends OncePerRequestFilter {
           .compact();
 
       // set the JWT token as a cookie
-      Cookie cookieJwt = new Cookie("jwt", jwt);
-      cookieJwt.setMaxAge(60 * 60 * 24 * 5); // set cookie expiry to 5 days
-      cookieJwt.setPath("/");
-      cookieJwt.setHttpOnly(true);
-      response.addCookie(cookieJwt);
+      // Cookie cookieJwt = new Cookie("jwt", jwt);
+      // cookieJwt.setMaxAge(60 * 60 * 24 * 5); // set cookie expiry to 5 days
+      // cookieJwt.setPath("/");
+      // cookieJwt.setHttpOnly(true);
+      // response.addCookie(cookieJwt);
 
-      Cookie cookieUsername = new Cookie("username", user.getUsername());
-      cookieUsername.setMaxAge(60 * 60 * 24 * 5); // set cookie expiry to 5 days
-      cookieUsername.setPath("/");
-      response.addCookie(cookieUsername);
+      ResponseCookieBuilder cookieBuilder = ResponseCookie.from("jwt", jwt)
+          .maxAge(60 * 60 * 24 * 5)
+          .path("/")
+          .httpOnly(true)
+          .sameSite("None")
+          .secure(true);
+      response.addHeader("Set-Cookie", cookieBuilder.build().toString());
+
+      ResponseCookieBuilder cookieBuilder2 = ResponseCookie.from("username", user.getUsername())
+          .maxAge(60 * 60 * 24 * 5) // set cookie expiry to 5 days
+          .path("/")
+          .sameSite("None");
+      response.addHeader("Set-Cookie", cookieBuilder2.build().toString());
 
     } else {
       System.out.println("authentication is null");

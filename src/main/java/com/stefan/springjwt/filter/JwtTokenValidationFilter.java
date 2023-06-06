@@ -30,19 +30,19 @@ public class JwtTokenValidationFilter extends OncePerRequestFilter {
       throws ServletException, IOException, java.io.IOException {
 
     // get the JWT token from the header
-    String jwt = request.getHeader("Authorization");
+    // String jwt = request.getHeader("Authorization");
 
     // get the JWT token from the cookie
-    // Cookie[] cookies = request.getCookies();
-    // String jwt = null;
-    // if(cookies != null) {
-    // for(Cookie cookie : cookies) {
-    // if(cookie.getName().equals("jwt")) {
-    // jwt = cookie.getValue();
-    // break;
-    // }
-    // }
-    // }
+    Cookie[] cookies = request.getCookies();
+    String jwt = null;
+    if (cookies != null) {
+      for (Cookie cookie : cookies) {
+        if (cookie.getName().equals("jwt")) {
+          jwt = cookie.getValue();
+          break;
+        }
+      }
+    }
 
     if (null != jwt) {
       try {

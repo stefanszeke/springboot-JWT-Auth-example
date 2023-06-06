@@ -31,17 +31,29 @@ public class ProjectSecurityConfig {
     http
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-        .cors(cors -> cors.disable())
         .csrf(csrf -> csrf.disable())
 
+        .cors(cors -> {
+          cors.configurationSource(request -> {
+            CorsConfiguration config = new CorsConfiguration();
+            config.addAllowedOrigin("http://localhost:4200");
+            config.addAllowedMethod("*");
+            config.addAllowedHeader("*");
+            config.setAllowCredentials(true);
+            config.setMaxAge(3600L);
+            config.setExposedHeaders(Arrays.asList("Authorization")); // for JWT
+            return config;
+          });
+        })
+
         .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/register", "/loginUser","/test").permitAll()
+            .requestMatchers("/register", "/loginUser", "/test").permitAll()
             .anyRequest().authenticated())
 
         .addFilterBefore(new JwtTokenValidationFilter(), BasicAuthenticationFilter.class)
         .addFilterAfter(new JwtTokenGeneratorFilter(), BasicAuthenticationFilter.class)
 
-        .formLogin(withDefaults())
+        .formLogin(formLogin -> formLogin.disable())
         .httpBasic(withDefaults());
 
     return http.build();

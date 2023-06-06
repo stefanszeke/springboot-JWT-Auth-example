@@ -1,8 +1,10 @@
 package com.stefan.springjwt.controller;
 
 import java.security.Principal;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -20,13 +22,12 @@ import com.stefan.springjwt.repository.UserRepository;
 
 @RestController
 public class UserController {
-  
+
   @Autowired
   private PasswordEncoder passwordEncoder;
 
   @Autowired
   private UserRepository userRepository;
-
 
   @GetMapping("/test")
   public ResponseEntity<String> test() {
@@ -34,10 +35,16 @@ public class UserController {
   }
 
   @GetMapping("/test2")
-  public ResponseEntity<String> test2(Principal principal) {
+  public ResponseEntity<Map<String, String>> test2(Principal principal) {
+
+    if (principal == null) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+          .body(Map.of("error", "Unauthorized: Token is missing or invalid"));
+    }
+
     String userID = principal.getName();
     System.out.println("userID: " + userID);
-    return ResponseEntity.ok("Protected: Test2 successful! User ID: " + userID);
+    return ResponseEntity.ok(Map.of("message", "Test2 successful!: user Id: " + userID));
   }
 
   @PostMapping("/test")
@@ -46,11 +53,10 @@ public class UserController {
     return ResponseEntity.ok("Post Test successful!");
   }
 
-
   @PostMapping("/register")
   public ResponseEntity<String> register(@RequestBody User user) {
 
-    if(userRepository.findByEmail(user.getEmail()) != null) {
+    if (userRepository.findByEmail(user.getEmail()) != null) {
       return ResponseEntity.badRequest().body("Email already exists!");
     }
 
@@ -65,9 +71,9 @@ public class UserController {
   }
 
   @GetMapping("/loginUser")
-  public ResponseEntity<String> login() {
+  public ResponseEntity<Map<String, String>> login() {
     System.out.println("loggin in");
-    return ResponseEntity.ok("Login successful!");
+    return ResponseEntity.ok(Map.of("message", "login successful!"));
   }
 
 }

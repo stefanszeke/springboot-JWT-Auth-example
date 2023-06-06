@@ -20,7 +20,7 @@ Content-Type: application/json
 
 ### login
 GET http://localhost:8080/loginUser
-Authorization: Basic test@test.com:test
+Authorization: Basic test@test.com:testj
 
 ### test protected route with token
 GET http://localhost:8080/test2
