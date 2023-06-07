@@ -45,6 +45,7 @@ public class JwtTokenGeneratorFilter extends OncePerRequestFilter {
       String jwt = Jwts.builder()
           .setIssuer("springboot security app")
           .setSubject(String.valueOf(user.getId()))
+          .claim("username", user.getUsername())
           .setIssuedAt(new Date())
           .setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(5)))
           .signWith(key)

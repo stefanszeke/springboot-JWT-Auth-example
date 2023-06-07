@@ -12,6 +12,8 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.stefan.springjwt.model.UserPrincipal;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -54,11 +56,12 @@ public class JwtTokenValidationFilter extends OncePerRequestFilter {
 
         System.out.println("claims: " + claims);
 
-        String userId = claims.getSubject();
         String authorities = (String) claims.get("authorities");
+        
+        UserPrincipal userPrincipal = new UserPrincipal(claims.getSubject(), claims.get("username").toString());
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(
-            userId,
+            userPrincipal,
             null,
             AuthorityUtils.commaSeparatedStringToAuthorityList(authorities));
 
